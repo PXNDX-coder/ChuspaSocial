@@ -75,26 +75,39 @@ Alterna el estado de seguimiento (*follow/unfollow*) para un usuario o etiqueta 
 
 ### `local_chuspasocial_report_item`
 
-Permite reportar un contenido u objeto específico dentro de la plataforma.
+Permite reportar una publicación, un comentario o un anuncio de libro para que lo revisen los moderadores.
 
 **Descripción:**  
-Envía un reporte sobre un elemento especificado indicando el componente, el ID del elemento y el motivo del reporte.
+Crea un reporte sobre el elemento indicado, con el motivo del reporte. El reporte queda con estado abierto en la cola de reportes y se avisa a los moderadores. Un mismo usuario no puede reportar dos veces el mismo elemento.
 
 **Parámetros:**  
-* `component` (string): Componente o tipo de elemento reportado (ej. `'post'`, `'comment'`, `'user'`).
+
+* `itemtype` (string): Tipo de elemento que se reporta. Valores permitidos: `'post'`, `'comment'` o `'listing'`.
 * `itemid` (int): ID del elemento que se reporta.
-* `reason` (string): Motivo o descripción del reporte.
+* `reason` (string): Motivo del reporte.
+
+Los tres parámetros son obligatorios y no tienen valor por defecto.
 
 **Capacidades requeridas:**  
+
 * `local/chuspasocial:report`
 
 **Respuesta de ejemplo (JSON):**  
+
 ```json
 {
-  "status": true,
-  "message": "Reporte enviado con éxito."
+  "status": true
 }
 ```
+
+El campo `status` es `true` cuando el reporte se creó.
+
+**Errores:**  
+
+* `invalid_parameter_exception`: `itemtype` no es `post`, `comment` ni `listing`, o un parámetro no tiene el formato esperado (por ejemplo, `itemid` no es un entero).
+* `moodle_exception` (`reportsent`): el usuario ya reportó este elemento.
+* `required_capability_exception`: el usuario no tiene la capacidad `local/chuspasocial:report`.
+* `require_login`: el usuario no tiene sesión iniciada.
 
 ### `local_chuspasocial_get_listings`
 
